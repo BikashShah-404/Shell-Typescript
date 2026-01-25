@@ -13,7 +13,9 @@ console.log(paths);
 
 const checkExecFileExistAndPerm = (filename: string) => {
   const isThereAnyExecFile = paths?.some((eachPath) => {
-    const pathForFile = eachPath.concat(`\\${filename}`);
+    const pathForFile = path.join(eachPath.toString(), filename);
+    console.log(pathForFile);
+
     const doesFileForCommandExist = fs.existsSync(pathForFile);
     if (doesFileForCommandExist) {
       try {
