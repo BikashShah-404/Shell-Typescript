@@ -7,8 +7,12 @@ const rl = createInterface({
 
 function givePrompt() {
   rl.question("$ ", (command) => {
-    console.log(`${command}: command not found`);
-    givePrompt();
+    if (command === "exit") {
+      rl.close();
+    } else {
+      console.log(`${command}: command not found`);
+      givePrompt();
+    }
   });
 }
 givePrompt();
