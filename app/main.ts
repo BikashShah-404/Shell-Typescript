@@ -11,24 +11,21 @@ const builtIn: Set<String> = new Set(["echo", "exit", "type"]);
 const paths: String[] | undefined = process.env.PATH?.split(path.delimiter);
 console.log(paths);
 
-const checkExecFileExistAndPerm = async (filename: string) => {
-  const isThereAnyExecFile = await paths?.some((eachPath) => {
+const checkExecFileExistAndPerm = (filename: string) => {
+  const isThereAnyExecFile = paths?.some((eachPath) => {
     const pathForFile = eachPath.concat(`\\${filename}`);
     const doesFileForCommandExist = fs.existsSync(pathForFile);
     if (doesFileForCommandExist) {
-      fs.access(pathForFile, fs.constants.X_OK, (err) => {
-        if (err) {
-          // skip, do nothing
-        } else {
-          console.log(`${filename} is ${pathForFile}`);
-        }
-      });
-      return true;
-    } else {
-      return false;
+      try {
+        fs.accessSync(pathForFile, fs.constants.X_OK);
+        console.log(`${filename} is ${pathForFile}`);
+        return true;
+      } catch (err) {
+        // skip, do nothing
+      }
     }
   });
-  return isThereAnyExecFile;
+  if (!isThereAnyExecFile) console.log(`${filename}: not found`);
 };
 
 function givePrompt() {
@@ -46,8 +43,7 @@ function givePrompt() {
       if (isBuiltIn) {
         console.log(`${commandParts[1]} is a shell builtin`);
       } else {
-        const isThereAnyExecFile = checkExecFileExistAndPerm(commandParts[1]);
-        if (!isThereAnyExecFile) console.log(`${commandParts[1]}: not found`);
+        checkExecFileExistAndPerm(commandParts[1]);
       }
     } else {
       console.log(`${commandParts[0]}: command not found`);
