@@ -11,6 +11,26 @@ const builtIn: Set<String> = new Set(["echo", "exit", "type"]);
 const paths: String[] | undefined = process.env.PATH?.split(path.delimiter);
 console.log(paths);
 
+const checkExecFileExistAndPerm = async (filename: string) => {
+  const isThereAnyExecFile = await paths?.some((eachPath) => {
+    const pathForFile = eachPath.concat(`\\${filename}`);
+    const doesFileForCommandExist = fs.existsSync(pathForFile);
+    if (doesFileForCommandExist) {
+      fs.access(pathForFile, fs.constants.X_OK, (err) => {
+        if (err) {
+          // skip, do nothing
+        } else {
+          console.log(`${filename} is ${pathForFile}`);
+        }
+      });
+      return true;
+    } else {
+      return false;
+    }
+  });
+  return isThereAnyExecFile;
+};
+
 function givePrompt() {
   rl.question("$ ", (command: string) => {
     // split(/s+/) - splits the string into parts wherever there are one or more whitespace characters.
@@ -26,23 +46,7 @@ function givePrompt() {
       if (isBuiltIn) {
         console.log(`${commandParts[1]} is a shell builtin`);
       } else {
-        const isThereAnyExecFile = paths?.some((eachPath) => {
-          const pathForFile = eachPath.concat(`\\${commandParts[1]}`);
-          const doesFileForCommandExist = fs.existsSync(pathForFile);
-          if (doesFileForCommandExist) {
-            fs.access(pathForFile, fs.constants.X_OK, (err) => {
-              if (err) {
-                // skip, do nothing
-                return true;
-              } else {
-                console.log(`${commandParts[1]} is ${pathForFile}`);
-                return true;
-              }
-            });
-          } else {
-            return false;
-          }
-        });
+        const isThereAnyExecFile = checkExecFileExistAndPerm(commandParts[1]);
         if (!isThereAnyExecFile) console.log(`${commandParts[1]}: not found`);
       }
     } else {
