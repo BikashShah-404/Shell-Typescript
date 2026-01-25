@@ -9,12 +9,10 @@ const rl = createInterface({
 
 const builtIn: Set<String> = new Set(["echo", "exit", "type"]);
 const paths: String[] | undefined = process.env.PATH?.split(path.delimiter);
-console.log(paths);
 
 const checkExecFileExistAndPerm = (filename: string) => {
   const isThereAnyExecFile = paths?.some((eachPath) => {
     const pathForFile = path.join(eachPath.toString(), filename);
-    console.log(pathForFile);
 
     const doesFileForCommandExist = fs.existsSync(pathForFile);
     if (doesFileForCommandExist) {
@@ -25,9 +23,13 @@ const checkExecFileExistAndPerm = (filename: string) => {
       } catch (err) {
         // skip, do nothing
       }
+    } else {
+      return false;
     }
   });
+
   if (!isThereAnyExecFile) console.log(`${filename}: not found`);
+  return;
 };
 
 function givePrompt() {
