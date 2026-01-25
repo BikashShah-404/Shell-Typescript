@@ -6,6 +6,5 @@ const rl = createInterface({
 });
 
 rl.question("$ ", (answer) => {
-  console.log("hello");
   rl.close();
 });
