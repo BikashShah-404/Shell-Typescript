@@ -30,33 +30,6 @@ const checkForExecPermission = (filePath: string) => {
   }
 };
 
-// const checkExecFileExistAndPerm = (filename: string): boolean | undefined => {
-//   // some will return true as soon as it finds the file with the exec permission and doesn't check other paths , well that's how the path search for executable commands works.
-//   const isThereAnyExecFile = paths?.some((eachPath) => {
-//     // path.join() basically concats the parts of path as per the operating sysytem
-//     const pathForFile = path.join(eachPath.toString(), filename);
-
-//     // fs.existsSync() will synchronously check if the file exists.
-//     const doesFileForCommandExist = fs.existsSync(pathForFile);
-//     if (doesFileForCommandExist) {
-//       try {
-//         // fs.accessSync() will syncronously check if the file has exec permission
-//         fs.accessSync(pathForFile, fs.constants.X_OK);
-//         console.log(`${filename} is ${pathForFile}`);
-//         return true;
-//       } catch (err) {
-//         // if the file doesn't have exec permission, the fs.accessSync() returns error which will be catched here offcourse.
-//         // skip, do nothing
-//       }
-//     } else {
-//       return false;
-//     }
-//   });
-//   // if after searching the entire path , no file was found then:
-
-//   return isThereAnyExecFile;
-// };
-
 const runEcho = (commandParts: string[]): void => {
   console.log(commandParts.slice(1).join(" "));
 };
@@ -100,7 +73,7 @@ const runCustomCommand = (command: string, args: String[]) => {
       );
       return true;
     } else {
-      // do nothing if file exist and doesn't have exec permission.
+      //if file exist and doesn't have exec permission.
       return false;
     }
   } else {
@@ -123,8 +96,8 @@ function givePrompt() {
       commandParts[1] && runType(commandParts[1]);
     } else {
       const [command, ...args] = commandParts;
-      runCustomCommand(command, args);
-      if (!runCustomCommand)
+      const didCustomCommandRun = runCustomCommand(command, args);
+      if (!didCustomCommandRun)
         console.log(`${commandParts[0]}: command not found`);
     }
     givePrompt();
