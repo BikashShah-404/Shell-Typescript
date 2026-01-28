@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { createInterface } from "readline";
-import { execFileSync, spawn } from "child_process";
+import { ChildProcess, execFileSync, spawn } from "child_process";
 
 const rl = createInterface({
   input: process.stdin,
@@ -58,7 +58,7 @@ const runType = (typeArgument: string) => {
   }
 };
 
-const runCustomCommand = (command: string, args: String[]) => {
+const runCustomCommand = (command: string, args: String[]): ChildProcess => {
   const pathForFile = checkIfFileForCommandExist(command);
 
   if (pathForFile) {
@@ -70,14 +70,15 @@ const runCustomCommand = (command: string, args: String[]) => {
         { stdio: "inherit" },
       );
       proc.stdout?.on("data", (data) => {});
+      return proc;
     } else {
       //if file exist and doesn't have exec permission.
-      spawn("echo", [`${command}: don't have exec permission`], {
+      return spawn("echo", [`${command}: don't have exec permission`], {
         stdio: "inherit",
       });
     }
   } else {
-    spawn("echo", [`${path.basename(command)}: command not found`], {
+    return spawn("echo", [`${path.basename(command)}: command not found`], {
       stdio: "inherit",
     });
   }
@@ -98,9 +99,9 @@ function givePrompt() {
       commandParts[1] && runType(commandParts[1]);
     } else {
       const [command, ...args] = commandParts;
-      runCustomCommand(command, args);
+      const childproc = runCustomCommand(command, args);
+      childproc.on("close", () => givePrompt());
     }
-    givePrompt();
   });
 }
 givePrompt();
