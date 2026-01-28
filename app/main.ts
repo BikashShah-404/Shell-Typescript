@@ -12,13 +12,14 @@ const builtIn: Set<String> = new Set(["echo", "exit", "type"]);
 const paths: String[] = process?.env?.PATH?.split(path.delimiter) ?? [];
 
 const checkIfFileForCommandExist = (command: string) => {
+  let arrayOfExistingFiles: String[] = [];
   for (let eachPath of paths ?? []) {
     const pathForFile = path.join(eachPath.toString(), command);
     if (fs.existsSync(pathForFile)) {
-      return pathForFile;
+      arrayOfExistingFiles.push(pathForFile);
     }
   }
-  return null;
+  return arrayOfExistingFiles;
 };
 
 const checkForExecPermission = (filePath: string) => {
@@ -45,29 +46,32 @@ const handleBuiltIn = (commandToCheck: string): boolean => {
 const runType = (typeArgument: string) => {
   const isBuiltIn = handleBuiltIn(typeArgument);
   if (!isBuiltIn) {
-    const pathForFile = checkIfFileForCommandExist(typeArgument);
+    const pathsForFile = checkIfFileForCommandExist(typeArgument);
 
-    if (pathForFile) {
-      // const hasExecPermission = checkForExecPermission(pathForFile);
-
-      // if (hasExecPermission) {
-      console.log(`${typeArgument} is ${pathForFile}`);
-      // } else {
-      // do nothing if file exist and doesn't have exec permission.
-      // }
+    if (pathsForFile.length > 0) {
+      const pathForFileWithExecPerm = pathsForFile.find((pathForFile) =>
+        checkForExecPermission(pathForFile.toString()),
+      );
+      if (pathForFileWithExecPerm) {
+        console.log(`${typeArgument} is ${pathForFileWithExecPerm}`);
+      } else {
+        // do nothing if file exist and doesn't have exec permission.
+      }
     }
-    if (!pathForFile) console.log(`${typeArgument}: not found`);
+    if (pathsForFile.length === 0) console.log(`${typeArgument}: not found`);
   }
 };
 
 const runCustomCommand = (command: string, args: String[]): ChildProcess => {
-  const pathForFile = checkIfFileForCommandExist(command);
+  const pathsForFile = checkIfFileForCommandExist(command);
 
-  if (pathForFile) {
-    const hasExecPermission = checkForExecPermission(pathForFile);
-    if (hasExecPermission) {
+  if (pathsForFile.length > 0) {
+    const pathForFileWithExecPerm = pathsForFile.find((pathForFile) =>
+      checkForExecPermission(pathForFile.toString()),
+    );
+    if (pathForFileWithExecPerm) {
       const proc = spawn(
-        path.basename(pathForFile),
+        path.basename(pathForFileWithExecPerm.toString()),
         args.map((eachArg) => eachArg.toString()),
         { stdio: "inherit" },
       );
