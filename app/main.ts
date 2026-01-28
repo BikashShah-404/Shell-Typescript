@@ -68,6 +68,9 @@ const runCustomCommand = (command: string, args: String[]) => {
         const stdout = execFileSync(
           pathForFile,
           args.map((eachArg) => eachArg.toString()),
+          {
+            encoding: "utf8",
+          },
         );
         console.log(stdout);
         return true;
