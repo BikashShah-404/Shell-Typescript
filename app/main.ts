@@ -106,8 +106,8 @@ function givePrompt() {
       if (!didCustomCommandRun) {
         console.log(`${commandParts[0]}: command not found`);
       }
-      givePrompt();
     }
+    givePrompt();
   });
 }
 givePrompt();
