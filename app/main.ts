@@ -46,11 +46,11 @@ const runType = (typeArgument: string) => {
   const isBuiltIn = handleBuiltIn(typeArgument);
   if (!isBuiltIn) {
     const pathForFile = checkIfFileForCommandExist(typeArgument);
-    console.log(pathForFile);
+    if (!pathForFile) console.log(pathForFile);
 
     if (pathForFile) {
       const hasExecPermission = checkForExecPermission(pathForFile);
-      console.log(hasExecPermission);
+      if (!hasExecPermission) console.log(hasExecPermission);
 
       if (hasExecPermission) {
         console.log(`${typeArgument} is ${pathForFile}`);
