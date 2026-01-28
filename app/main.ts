@@ -17,6 +17,7 @@ function givePrompt() {
 
     if (commandParts[0] === "exit") {
       runExit(commandParts, rl);
+      return;
     } else if (commandParts[0] === "echo") {
       runEcho(commandParts);
     } else if (commandParts[0] === "type") {
