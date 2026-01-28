@@ -1,10 +1,9 @@
 import { createInterface } from "readline";
-import { runEcho } from "./utils/runEcho";
-import { runCustomCommand } from "./utils/handleCustomCommands";
-import { runType } from "./utils/runType";
-import { runExit } from "./utils/runExit";
-import { builtIn } from "./constants";
-import { runPwd } from "./utils/runPwd";
+import { runEcho } from "./utils/runEcho.ts";
+import { runCustomCommand } from "./utils/handleCustomCommands.ts";
+import { runType } from "./utils/runType.ts";
+import { runExit } from "./utils/runExit.ts";
+import { runPwd } from "./utils/runPwd.ts";
 
 const rl = createInterface({
   input: process.stdin,
