@@ -90,6 +90,8 @@ const runCustomCommand = (command: string, args: String[]) => {
   if (pathForFile) {
     const hasExecPermission = checkForExecPermission(pathForFile);
     if (hasExecPermission) {
+      console.log("abc");
+
       execFile(
         pathForFile,
         [command.toString(), ...args.map((eachArg) => eachArg.toString())],
