@@ -70,6 +70,7 @@ const runCustomCommand = (command: string, args: String[]) => {
           args.map((eachArg) => eachArg.toString()),
           {
             encoding: "utf8",
+            argv0: path.basename(pathForFile),
           },
         );
         console.log(stdout);
