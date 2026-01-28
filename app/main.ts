@@ -97,9 +97,13 @@ const runCustomCommand = (command: string, args: String[]) => {
           console.log(stdout);
         },
       );
+      return true;
     } else {
       // do nothing if file exist and doesn't have exec permission.
+      return false;
     }
+  } else {
+    return false;
   }
 };
 
@@ -119,7 +123,8 @@ function givePrompt() {
     } else {
       const [command, ...args] = commandParts;
       runCustomCommand(command, args);
-      console.log(`${commandParts[0]}: command not found`);
+      if (!runCustomCommand)
+        console.log(`${commandParts[0]}: command not found`);
     }
     givePrompt();
   });
