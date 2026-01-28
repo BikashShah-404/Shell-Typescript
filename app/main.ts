@@ -66,7 +66,7 @@ const runCustomCommand = (command: string, args: String[]) => {
     if (hasExecPermission) {
       execFile(
         pathForFile,
-        [command.toString(), ...args.map((eachArg) => eachArg.toString())],
+        args.map((eachArg) => eachArg.toString()),
         (error, stdout, stderr) => {
           console.log(stdout);
         },
