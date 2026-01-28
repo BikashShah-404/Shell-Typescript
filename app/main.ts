@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { createInterface } from "readline";
-import { execFileSync } from "child_process";
+import { execFileSync, spawn } from "child_process";
 
 const rl = createInterface({
   input: process.stdin,
@@ -64,26 +64,22 @@ const runCustomCommand = (command: string, args: String[]) => {
   if (pathForFile) {
     const hasExecPermission = checkForExecPermission(pathForFile);
     if (hasExecPermission) {
-      try {
-        const stdout = execFileSync(
-          pathForFile,
-          args.map((eachArg) => eachArg.toString()),
-          {
-            encoding: "utf8",
-            argv0: path.basename(pathForFile),
-          },
-        );
-        console.log(stdout);
-        return true;
-      } catch (error) {
-        return false;
-      }
+      const proc = spawn(
+        path.basename(pathForFile),
+        args.map((eachArg) => eachArg.toString()),
+        { stdio: "inherit" },
+      );
+      proc.stdout?.on("data", (data) => {});
     } else {
       //if file exist and doesn't have exec permission.
-      return false;
+      spawn("echo", [`${command}: don't have exec permission`], {
+        stdio: "inherit",
+      });
     }
   } else {
-    return false;
+    spawn("echo", [`${path.basename(command)}: command not found`], {
+      stdio: "inherit",
+    });
   }
 };
 
@@ -102,10 +98,7 @@ function givePrompt() {
       commandParts[1] && runType(commandParts[1]);
     } else {
       const [command, ...args] = commandParts;
-      const didCustomCommandRun = runCustomCommand(command, args);
-      if (!didCustomCommandRun) {
-        console.log(`${commandParts[0]}: command not found`);
-      }
+      runCustomCommand(command, args);
     }
     givePrompt();
   });
