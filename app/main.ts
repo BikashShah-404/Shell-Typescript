@@ -4,6 +4,7 @@ import { runCustomCommand } from "./utils/handleCustomCommands.ts";
 import { runType } from "./utils/runType.ts";
 import { runExit } from "./utils/runExit.ts";
 import { runPwd } from "./utils/runPwd.ts";
+import { runCd } from "./utils/runCd.ts";
 
 const rl = createInterface({
   input: process.stdin,
@@ -24,6 +25,8 @@ function givePrompt() {
       commandParts[1] && runType(commandParts[1]);
     } else if (commandParts[0] === "pwd") {
       runPwd();
+    } else if (commandParts[0] === "cd") {
+      runCd(commandParts[1]);
     } else {
       const [command, ...args] = commandParts;
       if (command) {
