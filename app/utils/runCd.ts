@@ -5,7 +5,6 @@ export const runCd = (dirToGo: string) => {
     // const doesDirExist = statSync(dirToGo).isDirectory();
     // if (doesDirExist) {
     process.chdir(dirToGo);
-    
     // }
   } catch (error) {
     console.log(`cd: ${dirToGo}: No such file or directory`);
