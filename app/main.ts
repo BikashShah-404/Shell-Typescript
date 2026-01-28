@@ -86,16 +86,11 @@ const runType = (typeArgument: string) => {
 };
 
 const runCustomCommand = (command: string, args: String[]) => {
-  console.log("1");
-
   const pathForFile = checkIfFileForCommandExist(command);
-  console.log("2");
 
   if (pathForFile) {
     const hasExecPermission = checkForExecPermission(pathForFile);
     if (hasExecPermission) {
-      console.log("abc");
-
       execFile(
         pathForFile,
         [command.toString(), ...args.map((eachArg) => eachArg.toString())],
