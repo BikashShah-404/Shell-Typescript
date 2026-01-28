@@ -48,13 +48,13 @@ const runType = (typeArgument: string) => {
     const pathForFile = checkIfFileForCommandExist(typeArgument);
 
     if (pathForFile) {
-      const hasExecPermission = checkForExecPermission(pathForFile);
+      // const hasExecPermission = checkForExecPermission(pathForFile);
 
-      if (hasExecPermission) {
-        console.log(`${typeArgument} is ${pathForFile}`);
-      } else {
-        // do nothing if file exist and doesn't have exec permission.
-      }
+      // if (hasExecPermission) {
+      console.log(`${typeArgument} is ${pathForFile}`);
+      // } else {
+      // do nothing if file exist and doesn't have exec permission.
+      // }
     }
     if (!pathForFile) console.log(`${typeArgument}: not found`);
   }
