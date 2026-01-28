@@ -101,7 +101,9 @@ function givePrompt() {
       const [command, ...args] = commandParts;
       const childproc = runCustomCommand(command, args);
       childproc.on("close", () => givePrompt());
+      return;
     }
+    givePrompt();
   });
 }
 givePrompt();
