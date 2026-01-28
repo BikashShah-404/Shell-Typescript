@@ -12,7 +12,7 @@ const builtIn: Set<String> = new Set(["echo", "exit", "type"]);
 const paths: String[] | undefined = process.env.PATH?.split(path.delimiter);
 
 const checkIfFileForCommandExist = (command: string) => {
-  for (let eachPath in paths) {
+  for (let eachPath of paths ?? []) {
     const pathForFile = path.join(eachPath.toString(), command);
     if (fs.existsSync(pathForFile)) {
       return pathForFile;
