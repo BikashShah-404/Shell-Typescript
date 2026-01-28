@@ -93,7 +93,7 @@ const runCustomCommand = (command: string, args: String[]) => {
       execFile(
         pathForFile,
         [command.toString(), ...args.map((eachArg) => eachArg.toString())],
-        (stdout) => {
+        (error, stdout, stderr) => {
           console.log(stdout);
         },
       );
