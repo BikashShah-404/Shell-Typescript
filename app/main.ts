@@ -9,7 +9,7 @@ const rl = createInterface({
 });
 
 const builtIn: Set<String> = new Set(["echo", "exit", "type"]);
-const paths: String[] | undefined = process.env.PATH?.split(path.delimiter);
+const paths: String[] = process?.env?.PATH?.split(path.delimiter) ?? [];
 
 const checkIfFileForCommandExist = (command: string) => {
   for (let eachPath of paths ?? []) {
@@ -25,7 +25,7 @@ const checkForExecPermission = (filePath: string) => {
   try {
     fs.accessSync(filePath, fs.constants.X_OK);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 };
@@ -46,11 +46,9 @@ const runType = (typeArgument: string) => {
   const isBuiltIn = handleBuiltIn(typeArgument);
   if (!isBuiltIn) {
     const pathForFile = checkIfFileForCommandExist(typeArgument);
-    if (!pathForFile) console.log("p",pathForFile);
 
     if (pathForFile) {
       const hasExecPermission = checkForExecPermission(pathForFile);
-      if (!hasExecPermission) console.log("e",hasExecPermission);
 
       if (hasExecPermission) {
         console.log(`${typeArgument} is ${pathForFile}`);
