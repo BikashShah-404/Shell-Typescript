@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { createInterface } from "readline";
-import { execFile } from "child_process";
+import { execFileSync } from "child_process";
 
 const rl = createInterface({
   input: process.stdin,
@@ -64,14 +64,16 @@ const runCustomCommand = (command: string, args: String[]) => {
   if (pathForFile) {
     const hasExecPermission = checkForExecPermission(pathForFile);
     if (hasExecPermission) {
-      execFile(
-        pathForFile,
-        args.map((eachArg) => eachArg.toString()),
-        (error, stdout, stderr) => {
-          console.log(stdout);
-        },
-      );
-      return true;
+      try {
+        const stdout = execFileSync(
+          pathForFile,
+          args.map((eachArg) => eachArg.toString()),
+        );
+        console.log(stdout);
+        return true;
+      } catch (error) {
+        return false;
+      }
     } else {
       //if file exist and doesn't have exec permission.
       return false;
@@ -97,10 +99,11 @@ function givePrompt() {
     } else {
       const [command, ...args] = commandParts;
       const didCustomCommandRun = runCustomCommand(command, args);
-      if (!didCustomCommandRun)
+      if (!didCustomCommandRun) {
         console.log(`${commandParts[0]}: command not found`);
+      }
+      givePrompt();
     }
-    givePrompt();
   });
 }
 givePrompt();
