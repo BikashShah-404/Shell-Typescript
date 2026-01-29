@@ -13,6 +13,7 @@ export const runHistory = (args: string[]) => {
         for (const eachLine of data.toString().trim().split(os.EOL)) {
           commandHistory.push(eachLine);
         }
+        return;
       } catch (error) {
         console.error(error);
       }
@@ -23,6 +24,7 @@ export const runHistory = (args: string[]) => {
         writeFileSync(fileToWrite, commandHistory.join("\n") + "\n", {
           flag: "w",
         });
+        return;
       } catch (error) {
         console.error(error);
       }
@@ -40,6 +42,7 @@ export const runHistory = (args: string[]) => {
           writeFileSync(fileToAppend, commandHistory.join("\n") + "\n", {
             flag: "a",
           });
+          return;
         } else {
           writeFileSync(
             fileToAppend,
@@ -50,6 +53,7 @@ export const runHistory = (args: string[]) => {
               flag: "a",
             },
           );
+          return;
         }
       } catch (error) {
         console.error(error);
