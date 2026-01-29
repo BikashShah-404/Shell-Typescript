@@ -33,7 +33,7 @@ function givePrompt() {
     } else if (commandParts[0] === "cd") {
       runCd(commandParts[1]);
     } else if (commandParts[0] === "history") {
-      runHistory();
+      runHistory(Number(commandParts[1]));
     } else {
       const [command, ...args] = commandParts;
       if (command) {
