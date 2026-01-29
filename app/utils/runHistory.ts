@@ -5,6 +5,8 @@ import type { Interface } from "readline";
 export const commandHistory: string[] = [];
 
 export const runHistory = (args: string[]) => {
+  console.log(commandHistory);
+
   const optionToFnMapping: Record<string, (...argsForOption: any[]) => void> = {
     "-r": (fileToRead: string) => {
       if (!fileToRead) return;
@@ -38,8 +40,6 @@ export const runHistory = (args: string[]) => {
             command.startsWith("history -a") &&
             index !== commandHistory.length - 1,
         );
-        console.log(latestHistoryAppendOccurence, fileToAppend, commandHistory);
-
         if (latestHistoryAppendOccurence === -1) {
           writeFileSync(fileToAppend, commandHistory.join("\n") + "\n", {
             flag: "a",
@@ -86,7 +86,7 @@ export const runHistory = (args: string[]) => {
 export const readHistoryOnStartUp = () => {
   const pathForHistoryFile = process.env.HISTFILE as string;
   if (!existsSync(pathForHistoryFile)) {
-    writeFileSync(pathForHistoryFile, "", { flag: "a" });
+    writeFileSync(pathForHistoryFile, "", { flag: "w" });
   } else {
     runHistory(["-r", pathForHistoryFile]);
   }
