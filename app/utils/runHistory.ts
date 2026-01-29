@@ -8,7 +8,7 @@ export const runHistory = (length: number) => {
   } else {
     const requiredHistory = commandHistory.slice(-length);
     for (const index in requiredHistory ?? []) {
-      console.log(Number(index) + 1, requiredHistory[index]);
+      console.log(Number(index) + length + 1, requiredHistory[index]);
     }
   }
 };
