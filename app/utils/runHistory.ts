@@ -198,7 +198,7 @@ export const runHistory = (args: string[]) => {
       try {
         const latestHistoryAppendOccurence = commandHistory.findLastIndex(
           (command, index) =>
-            command.startsWith("history -a") &&
+            command === `history -a ${fileToAppend}` &&
             index !== commandHistory.length - 1,
         );
         if (latestHistoryAppendOccurence === -1) {
