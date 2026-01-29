@@ -18,8 +18,6 @@ export const runHistory = (args: string[]) => {
     },
   };
 
-  console.log(args);
-
   if (args.length === 0) {
     commandHistory.forEach((cmd, i) => {
       console.log(i + 1, cmd);
