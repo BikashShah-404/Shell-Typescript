@@ -28,6 +28,7 @@ export const runHistory = (args: string[]) => {
     },
     "-a": (fileToAppend: string) => {
       if (commandHistory.length === 0) return;
+      //   saw people resetting the commandHistory array after every append, i mean that does simplify things,but we lose the top-down navigation for the deleted history(we would have lost them  but clearing owr local cache won’t touch the readline.Interface history. That’s why the idea of “just reset the array” is safe if we only care about your own append logic — the built‑in navigation history remains intact unless you explicitly clear rl.history but let's just imagine that createInterface inbuilt history navigation doesn't exist, then this code is required so i guess i will keep it as it is.
       try {
         const latestHistoryAppendOccurence = commandHistory.findLastIndex(
           (command, index) =>
@@ -42,7 +43,7 @@ export const runHistory = (args: string[]) => {
           writeFileSync(
             fileToAppend,
             commandHistory
-              .slice(latestHistoryAppendOccurence+1, commandHistory.length)
+              .slice(latestHistoryAppendOccurence + 1, commandHistory.length)
               .join("\n") + "\n",
             {
               flag: "a",
