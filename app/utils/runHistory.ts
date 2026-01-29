@@ -16,9 +16,8 @@ export const runHistory = (args: string[]) => {
       if (!fileToRead) return;
       try {
         const data = readFileSync(fileToRead, "utf8");
-        console.log(data.toString().trim().split(os.EOL), commandHistory);
-
         for (const eachLine of data.toString().trim().split(os.EOL)) {
+          if (eachLine === "") continue;
           commandHistory.push(eachLine);
         }
         return;
