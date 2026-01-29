@@ -31,7 +31,8 @@ export const runHistory = (args: string[]) => {
       try {
         const latestHistoryAppendOccurence = commandHistory.findLastIndex(
           (command, index) =>
-            command.startsWith("history -a") && index !== commandHistory.length,
+            command.startsWith("history -a") &&
+            index !== commandHistory.length - 1,
         );
         if (latestHistoryAppendOccurence === -1) {
           writeFileSync(fileToAppend, commandHistory.join("\n") + "\n", {
