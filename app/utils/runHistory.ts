@@ -5,8 +5,6 @@ import type { Interface } from "readline";
 export const commandHistory: string[] = [];
 
 export const runHistory = (args: string[]) => {
-  console.log(commandHistory);
-
   const optionToFnMapping: Record<string, (...argsForOption: any[]) => void> = {
     "-r": (fileToRead: string) => {
       if (!fileToRead) return;
