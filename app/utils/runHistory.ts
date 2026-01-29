@@ -6,8 +6,6 @@ export const runHistory = (length: number) => {
       console.log(Number(index) + 1, commandHistory[index]);
     }
   } else {
-    console.log(length);
-
     const requiredHistory = commandHistory.slice(-length);
     for (const index in requiredHistory ?? []) {
       console.log(Number(index) + 1, requiredHistory[index]);
