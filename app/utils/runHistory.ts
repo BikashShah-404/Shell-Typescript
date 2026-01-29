@@ -38,6 +38,8 @@ export const runHistory = (args: string[]) => {
             command.startsWith("history -a") &&
             index !== commandHistory.length - 1,
         );
+        console.log(latestHistoryAppendOccurence);
+
         if (latestHistoryAppendOccurence === -1) {
           writeFileSync(fileToAppend, commandHistory.join("\n") + "\n", {
             flag: "a",
