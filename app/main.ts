@@ -5,7 +5,6 @@ import { runType } from "./utils/runType.ts";
 import { runExit } from "./utils/runExit.ts";
 import { runPwd } from "./utils/runPwd.ts";
 import { runCd } from "./utils/runCd.ts";
-import minimist from "mini";
 
 import {
   commandHistory,

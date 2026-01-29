@@ -26,6 +26,24 @@ export const runHistory = (args: string[]) => {
         console.error(error);
       }
     },
+    "-a": (fileToAppend: string) => {
+      if (commandHistory.length === 0) return;
+      try {
+        const firstHistoryAppendOccurence = commandHistory.findIndex(
+          (command) => command.startsWith("history -a"),
+        );
+        writeFileSync(
+          fileToAppend,
+          commandHistory.slice(0, firstHistoryAppendOccurence).join("\n") +
+            "\n",
+          {
+            flag: "a",
+          },
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    },
   };
 
   if (args.length === 0) {
