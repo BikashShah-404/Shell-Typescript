@@ -21,6 +21,7 @@ export const handleHistoryNavigation = (rl: Interface) => {
   process.stdin.on("keypress", (_, key) => {
     if (!key) return;
 
+    // handle up arrow naviagtion
     if (key.name === "up") {
       if (commandHistory.length === 0) return;
 
@@ -36,6 +37,7 @@ export const handleHistoryNavigation = (rl: Interface) => {
       rl.write(commandHistory[historyIndex]);
     }
 
+    // handle down arrow navigation
     if (key.name === "down") {
       if (historyIndex === -1) return;
 
