@@ -19,9 +19,9 @@ export const runHistory = (args: string[]) => {
     "-w": (fileToWrite: string) => {
       if (commandHistory.length === 0) return;
       try {
-        for (const command of commandHistory) {
-          writeFileSync(fileToWrite, `${command}\n`, { flag: "a" });
-        }
+        writeFileSync(fileToWrite, commandHistory.join("\n") + "\n", {
+          flag: "a",
+        });
       } catch (error) {
         console.error(error);
       }
