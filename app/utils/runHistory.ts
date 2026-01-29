@@ -1,4 +1,10 @@
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import {
+  closeSync,
+  existsSync,
+  openSync,
+  readFileSync,
+  writeFileSync,
+} from "fs";
 import os from "os";
 import type { Interface } from "readline";
 
@@ -84,7 +90,7 @@ export const runHistory = (args: string[]) => {
 export const readHistoryOnStartUp = () => {
   const pathForHistoryFile = process.env.HISTFILE as string;
   if (!existsSync(pathForHistoryFile)) {
-    writeFileSync(pathForHistoryFile, "", { flag: "w" });
+    closeSync(openSync(pathForHistoryFile, "a"));
   } else {
     runHistory(["-r", pathForHistoryFile]);
   }
