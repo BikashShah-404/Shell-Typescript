@@ -17,6 +17,10 @@ export const runHistory = (length: number) => {
 };
 
 let historyIndex = -1;
+export const setHistoryIndex = (value: number) => {
+  historyIndex = value;
+};
+
 export const handleHistoryNavigation = (rl: Interface) => {
   process.stdin.on("keypress", (_, key) => {
     if (!key) return;

@@ -9,6 +9,7 @@ import {
   commandHistory,
   handleHistoryNavigation,
   runHistory,
+  setHistoryIndex,
 } from "./utils/runHistory.ts";
 
 import readline from "readline";
@@ -23,7 +24,14 @@ rl.prompt();
 
 rl.on("line", (command: string) => {
   // split(/s+/) - splits the string into parts wherever there are one or more whitespace characters.
-  commandHistory.push(command);
+  if (
+    command.trim() &&
+    commandHistory[commandHistory.length - 1] !== command.trim()
+  ) {
+    commandHistory.push(command.trim());
+  }
+  setHistoryIndex(-1);
+
   const commandParts = command.trim().split(/\s+/);
 
   if (commandParts[0] === "exit") {
