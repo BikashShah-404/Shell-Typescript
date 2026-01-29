@@ -51,7 +51,7 @@ export const runHistory = (args: string[]) => {
         );
         if (latestHistoryAppendOccurence === -1) {
           writeFileSync(fileToAppend, commandHistory.join("\n") + "\n", {
-            flag: "a",
+            flag: "w",
           });
           return;
         } else {
