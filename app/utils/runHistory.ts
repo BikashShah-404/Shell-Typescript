@@ -20,7 +20,7 @@ export const runHistory = (args: string[]) => {
       if (commandHistory.length === 0) return;
       try {
         for (const command of commandHistory) {
-          writeFileSync(fileToWrite, `${command}\n`);
+          writeFileSync(fileToWrite, `${command}\n`, { mode: "a" });
         }
       } catch (error) {
         console.error(error);
