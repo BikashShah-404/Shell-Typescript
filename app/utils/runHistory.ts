@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import type { Interface } from "readline";
 
 export const commandHistory: string[] = [];
@@ -11,6 +11,16 @@ export const runHistory = (args: string[]) => {
         const data = readFileSync(fileToRead, "utf8");
         for (const eachLine of data.toString().trim().split("\n")) {
           commandHistory.push(eachLine);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    "-w": (fileToWrite: string) => {
+      if (commandHistory.length === 0) return;
+      try {
+        for (const command of commandHistory) {
+          writeFileSync(fileToWrite, command);
         }
       } catch (error) {
         console.error(error);
