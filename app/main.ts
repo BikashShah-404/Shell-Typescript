@@ -50,6 +50,7 @@ rl.on("line", (command: string) => {
   rl.prompt();
 });
 
+// handle History Navigation
 readline.emitKeypressEvents(process.stdin);
 process.stdin.setRawMode(true);
 
