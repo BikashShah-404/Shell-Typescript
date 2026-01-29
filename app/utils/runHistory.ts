@@ -29,12 +29,25 @@ export const runHistory = (args: string[]) => {
     "-a": (fileToAppend: string) => {
       if (commandHistory.length === 0) return;
       try {
-        // const firstHistoryAppendOccurence = commandHistory.findIndex(
-        //   (command) => command.startsWith("history -a"),
-        // );
-        writeFileSync(fileToAppend, commandHistory.join("\n") + "\n", {
-          flag: "a",
-        });
+        const latestHistoryAppendOccurence = commandHistory.findLastIndex(
+          (command, index) =>
+            command.startsWith("history -a") && index !== commandHistory.length,
+        );
+        if (latestHistoryAppendOccurence === -1) {
+          writeFileSync(fileToAppend, commandHistory.join("\n") + "\n", {
+            flag: "a",
+          });
+        } else {
+          writeFileSync(
+            fileToAppend,
+            commandHistory
+              .slice(latestHistoryAppendOccurence, commandHistory.length)
+              .join("\n") + "\n",
+            {
+              flag: "a",
+            },
+          );
+        }
       } catch (error) {
         console.error(error);
       }
