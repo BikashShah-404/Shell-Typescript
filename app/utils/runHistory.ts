@@ -9,6 +9,7 @@ import os from "os";
 import type { Interface } from "readline";
 
 export const commandHistory: string[] = [];
+export const commandHistoryFromFile: string[] = [];
 
 export const runHistory = (args: string[]) => {
   const optionToFnMapping: Record<string, (...argsForOption: any[]) => void> = {
@@ -102,7 +103,7 @@ export const readHistoryOnStartUp = () => {
 
 export const writeHistoryOnExit = () => {
   const pathForHistoryFile = process.env.HISTFILE as string;
-  runHistory(["-a", pathForHistoryFile]);
+  runHistory(["-w", pathForHistoryFile]);
 };
 
 let historyIndex = -1;
