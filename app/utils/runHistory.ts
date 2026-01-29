@@ -42,7 +42,7 @@ export const runHistory = (args: string[]) => {
           writeFileSync(
             fileToAppend,
             commandHistory
-              .slice(latestHistoryAppendOccurence, commandHistory.length)
+              .slice(latestHistoryAppendOccurence+1, commandHistory.length)
               .join("\n") + "\n",
             {
               flag: "a",
