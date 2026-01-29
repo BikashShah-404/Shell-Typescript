@@ -1,4 +1,4 @@
-import { readFile } from "fs";
+import { readFileSync } from "fs";
 import type { Interface } from "readline";
 
 export const commandHistory: string[] = [];
@@ -7,14 +7,16 @@ export const runHistory = (args: string[]) => {
   const optionToFnMapping: Record<string, (...argsForOption: any[]) => void> = {
     "-r": (fileToRead: string) => {
       if (!fileToRead) return;
-      readFile(fileToRead, "utf8", (err, data) => {
-        if (err) {
-          console.log(err);
+      try {
+          const data=readFileSync(fileToRead,'utf8')
+          for (const eachLine of data.toString().trim().split("\n")) {
+              commandHistory.push(eachLine);
+            }
+        } catch (error) {
+          console.error(error);
+          
         }
-        for (const eachLine of data.toString().trim().split("\n")) {
-          commandHistory.push(eachLine);
-        }
-      });
+      }
     },
   };
 
