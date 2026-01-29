@@ -6,12 +6,10 @@ export const runHistory = (length: number) => {
       console.log(Number(index) + 1, commandHistory[index]);
     }
   } else {
-    const requiredHistory = commandHistory.slice(-length);
-    for (const index in requiredHistory ?? []) {
-      console.log(
-        commandHistory.indexOf(requiredHistory[index]) + 1,
-        requiredHistory[index],
-      );
-    }
+    commandHistory.map((eachCommand, index) => {
+      if (commandHistory.length - index <= length) {
+        console.log(Number(index) + 1, eachCommand);
+      }
+    });
   }
 };
