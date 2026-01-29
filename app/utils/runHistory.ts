@@ -1,18 +1,42 @@
+import { readFile } from "fs";
 import type { Interface } from "readline";
 
 export const commandHistory: string[] = [];
 
-export const runHistory = (length: number) => {
-  if (!length) {
-    for (const index in commandHistory ?? []) {
-      console.log(Number(index) + 1, commandHistory[index]);
-    }
-  } else {
+export const runHistory = (args: string[]) => {
+  const optionToFnMapping: Record<string, (...argsForOption: any[]) => void> = {
+    "-r": (fileToRead: string) => {
+      if (!fileToRead) return;
+      readFile(fileToRead, "utf8", (err, data) => {
+        if (err) {
+          console.log(err);
+        }
+        for (const eachLine of data.toString().trim().split("\n")) {
+          commandHistory.push(eachLine);
+        }
+      });
+    },
+  };
+
+  console.log(args);
+
+  if (args.length === 0) {
+    commandHistory.forEach((cmd, i) => {
+      console.log(i + 1, cmd);
+    });
+  } else if (args.length === 1 && parseInt(args[0], 10)) {
     commandHistory.map((eachCommand, index) => {
-      if (commandHistory.length - index <= length) {
+      if (commandHistory.length - index <= Number(args[0])) {
         console.log(Number(index) + 1, eachCommand);
       }
     });
+  } else {
+    const fn = optionToFnMapping[args[0]];
+    if (fn) {
+      fn(...args.slice(1));
+    } else {
+      console.error("Unknown option:", args[0]);
+    }
   }
 };
 

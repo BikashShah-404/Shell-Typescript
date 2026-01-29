@@ -5,6 +5,8 @@ import { runType } from "./utils/runType.ts";
 import { runExit } from "./utils/runExit.ts";
 import { runPwd } from "./utils/runPwd.ts";
 import { runCd } from "./utils/runCd.ts";
+import minimist from "mini";
+
 import {
   commandHistory,
   handleHistoryNavigation,
@@ -46,7 +48,10 @@ rl.on("line", (command: string) => {
   } else if (commandParts[0] === "cd") {
     runCd(commandParts[1]);
   } else if (commandParts[0] === "history") {
-    runHistory(Number(commandParts[1]));
+    const [command, ...args] = commandParts;
+    if (command) {
+      runHistory(args);
+    }
   } else {
     const [command, ...args] = commandParts;
     if (command) {
