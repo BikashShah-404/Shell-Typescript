@@ -17,12 +17,22 @@ export const runHistory = (args: string[]) => {
       if (!fileToRead) return;
       try {
         const data = readFileSync(fileToRead, "utf8");
-        for (const eachLine of data
-          .toString()
-          .trim()
-          .split(os.EOL)
-          .filter(Boolean)) {
-          commandHistory.push(eachLine);
+        if (fileToRead === process.env.HISTFILE) {
+          for (const eachLine of data
+            .toString()
+            .trim()
+            .split(os.EOL)
+            .filter(Boolean)) {
+            commandHistoryFromFile.push(eachLine);
+          }
+        } else {
+          for (const eachLine of data
+            .toString()
+            .trim()
+            .split(os.EOL)
+            .filter(Boolean)) {
+            commandHistory.push(eachLine);
+          }
         }
         return;
       } catch (error) {
@@ -30,7 +40,8 @@ export const runHistory = (args: string[]) => {
       }
     },
     "-w": (fileToWrite: string) => {
-      if (commandHistory.length === 0) return;
+      const historyArray = [...commandHistoryFromFile, ...commandHistory];
+      if (historyArray.length === 0) return;
       try {
         writeFileSync(fileToWrite, commandHistory.join("\n") + "\n", {
           flag: "w",
@@ -73,12 +84,15 @@ export const runHistory = (args: string[]) => {
   };
 
   if (args.length === 0) {
-    commandHistory.forEach((cmd, i) => {
+    [...commandHistoryFromFile, ...commandHistory].forEach((cmd, i) => {
       console.log(i + 1, cmd);
     });
   } else if (args.length === 1 && parseInt(args[0], 10)) {
-    commandHistory.map((eachCommand, index) => {
-      if (commandHistory.length - index <= Number(args[0])) {
+    [...commandHistoryFromFile, ...commandHistory].map((eachCommand, index) => {
+      if (
+        [...commandHistoryFromFile, ...commandHistory].length - index <=
+        Number(args[0])
+      ) {
         console.log(Number(index) + 1, eachCommand);
       }
     });
@@ -115,12 +129,13 @@ export const handleHistoryNavigation = (rl: Interface) => {
   process.stdin.on("keypress", (_, key) => {
     if (!key) return;
 
+    const historyArray = [...commandHistoryFromFile, ...commandHistory];
     // handle up arrow naviagtion
     if (key.name === "up") {
-      if (commandHistory.length === 0) return;
+      if (historyArray.length === 0) return;
 
       if (historyIndex === -1) {
-        historyIndex = commandHistory.length - 1;
+        historyIndex = historyArray.length - 1;
       } else if (historyIndex > 0) {
         historyIndex -= 1;
       }
@@ -128,7 +143,7 @@ export const handleHistoryNavigation = (rl: Interface) => {
       // It clears the current input, whatever was written on terminal before pressing up
       rl.write(null, { ctrl: true, name: "u" });
       //   Now we will write the history:
-      rl.write(commandHistory[historyIndex]);
+      rl.write(historyArray[historyIndex]);
     }
 
     // handle down arrow navigation
@@ -137,14 +152,14 @@ export const handleHistoryNavigation = (rl: Interface) => {
 
       historyIndex++;
 
-      if (historyIndex >= commandHistory.length) {
+      if (historyIndex >= historyArray.length) {
         historyIndex = -1;
         rl.write(null, { ctrl: true, name: "u" });
         return;
       }
 
       rl.write(null, { ctrl: true, name: "u" });
-      rl.write(commandHistory[historyIndex]);
+      rl.write(historyArray[historyIndex]);
     }
   });
 };
