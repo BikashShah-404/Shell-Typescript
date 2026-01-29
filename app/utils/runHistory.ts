@@ -100,6 +100,11 @@ export const readHistoryOnStartUp = () => {
   }
 };
 
+export const writeHistoryOnExit = () => {
+  const pathForHistoryFile = process.env.HISTFILE as string;
+  runHistory(["-a", pathForHistoryFile]);
+};
+
 let historyIndex = -1;
 export const setHistoryIndex = (value: number) => {
   historyIndex = value;
