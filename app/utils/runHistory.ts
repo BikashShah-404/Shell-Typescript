@@ -29,17 +29,12 @@ export const runHistory = (args: string[]) => {
     "-a": (fileToAppend: string) => {
       if (commandHistory.length === 0) return;
       try {
-        const firstHistoryAppendOccurence = commandHistory.findIndex(
-          (command) => command.startsWith("history -a"),
-        );
-        writeFileSync(
-          fileToAppend,
-          commandHistory.slice(0, firstHistoryAppendOccurence + 1).join("\n") +
-            "\n",
-          {
-            flag: "a",
-          },
-        );
+        // const firstHistoryAppendOccurence = commandHistory.findIndex(
+        //   (command) => command.startsWith("history -a"),
+        // );
+        writeFileSync(fileToAppend, commandHistory.join("\n") + "\n", {
+          flag: "a",
+        });
       } catch (error) {
         console.error(error);
       }
