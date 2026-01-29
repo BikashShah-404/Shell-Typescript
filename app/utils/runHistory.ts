@@ -8,14 +8,12 @@ export const runHistory = (args: string[]) => {
     "-r": (fileToRead: string) => {
       if (!fileToRead) return;
       try {
-          const data=readFileSync(fileToRead,'utf8')
-          for (const eachLine of data.toString().trim().split("\n")) {
-              commandHistory.push(eachLine);
-            }
-        } catch (error) {
-          console.error(error);
-          
+        const data = readFileSync(fileToRead, "utf8");
+        for (const eachLine of data.toString().trim().split("\n")) {
+          commandHistory.push(eachLine);
         }
+      } catch (error) {
+        console.error(error);
       }
     },
   };
