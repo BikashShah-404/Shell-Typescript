@@ -1,4 +1,5 @@
-import { readFileSync, writeFileSync } from "fs";
+import { existsSync, readFileSync, writeFileSync } from "fs";
+import os from "os";
 import type { Interface } from "readline";
 
 export const commandHistory: string[] = [];
@@ -9,7 +10,7 @@ export const runHistory = (args: string[]) => {
       if (!fileToRead) return;
       try {
         const data = readFileSync(fileToRead, "utf8");
-        for (const eachLine of data.toString().trim().split("\n")) {
+        for (const eachLine of data.toString().trim().split(os.EOL)) {
           commandHistory.push(eachLine);
         }
       } catch (error) {
@@ -20,7 +21,7 @@ export const runHistory = (args: string[]) => {
       if (commandHistory.length === 0) return;
       try {
         writeFileSync(fileToWrite, commandHistory.join("\n") + "\n", {
-          flag: "a",
+          flag: "w",
         });
       } catch (error) {
         console.error(error);
@@ -73,6 +74,15 @@ export const runHistory = (args: string[]) => {
     } else {
       console.error("Unknown option:", args[0]);
     }
+  }
+};
+
+export const readHistoryOnStartUp = () => {
+  const pathForHistoryFile = process.env.HISTFILE as string;
+  if (!existsSync(pathForHistoryFile)) {
+    writeFileSync(pathForHistoryFile, "", { flag: "a" });
+  } else {
+    runHistory(["-r", pathForHistoryFile]);
   }
 };
 

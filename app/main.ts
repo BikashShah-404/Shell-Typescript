@@ -1,19 +1,25 @@
 import { createInterface } from "readline";
+import readline from "readline";
+import path from "path";
+import os from "os";
+
 import { runEcho } from "./utils/runEcho.ts";
 import { runCustomCommand } from "./utils/handleCustomCommands.ts";
 import { runType } from "./utils/runType.ts";
 import { runExit } from "./utils/runExit.ts";
 import { runPwd } from "./utils/runPwd.ts";
 import { runCd } from "./utils/runCd.ts";
-
 import {
   commandHistory,
   handleHistoryNavigation,
+  readHistoryOnStartUp,
   runHistory,
   setHistoryIndex,
 } from "./utils/runHistory.ts";
 
-import readline from "readline";
+process.env.HISTFILE = process.env.HISTFILE
+  ? process.env.HISTFILE
+  : path.join(os.homedir(), "history.txt");
 
 const rl = createInterface({
   input: process.stdin,
@@ -22,6 +28,8 @@ const rl = createInterface({
 
 rl.setPrompt("$ ");
 rl.prompt();
+
+readHistoryOnStartUp();
 
 rl.on("line", (command: string) => {
   // split(/s+/) - splits the string into parts wherever there are one or more whitespace characters.
