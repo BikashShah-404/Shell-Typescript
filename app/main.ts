@@ -16,6 +16,7 @@ import {
   runHistory,
   setHistoryIndex,
 } from "./utils/runHistory.ts";
+import { handleAutoComplete } from "./utils/handleAutoComplete.ts";
 
 process.env.HISTFILE = process.env.HISTFILE
   ? process.env.HISTFILE
@@ -74,4 +75,11 @@ rl.on("line", (command: string) => {
 readline.emitKeypressEvents(process.stdin);
 process.stdin.setRawMode(true);
 
-handleHistoryNavigation(rl);
+process.stdin.on("keypress", (_, key) => {
+  if (!key) return;
+  if (key.name === "up" || key.name === "down") {
+    handleHistoryNavigation(rl);
+  } else if (key.name === "tab") {
+    handleAutoComplete(rl);
+  }
+});
