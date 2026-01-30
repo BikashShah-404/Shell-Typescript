@@ -78,7 +78,7 @@ process.stdin.setRawMode(true);
 process.stdin.on("keypress", (_, key) => {
   if (!key) return;
   if (key.name === "up" || key.name === "down") {
-    handleHistoryNavigation(rl);
+    handleHistoryNavigation(rl, key.name);
   } else if (key.name === "tab") {
     handleAutoComplete(rl);
   }

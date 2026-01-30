@@ -34,6 +34,7 @@ export const runHistory = (args: string[]) => {
             commandHistory.push(eachLine);
           }
         }
+
         return;
       } catch (error) {
         console.error(error);
@@ -125,41 +126,38 @@ export const setHistoryIndex = (value: number) => {
   historyIndex = value;
 };
 
-export const handleHistoryNavigation = (rl: Interface) => {
-  process.stdin.on("keypress", (_, key) => {
-    if (!key) return;
+export const handleHistoryNavigation = (rl: Interface, keyName) => {
+  const historyArray = [...commandHistoryFromFile, ...commandHistory];
 
-    const historyArray = [...commandHistoryFromFile, ...commandHistory];
-    // handle up arrow naviagtion
-    if (key.name === "up") {
-      if (historyArray.length === 0) return;
+  // handle up arrow naviagtion
+  if (keyName === "up") {
+    if (historyArray.length === 0) return;
 
-      if (historyIndex === -1) {
-        historyIndex = historyArray.length - 1;
-      } else if (historyIndex > 0) {
-        historyIndex -= 1;
-      }
-
-      // It clears the current input, whatever was written on terminal before pressing up
-      rl.write(null, { ctrl: true, name: "u" });
-      //   Now we will write the history:
-      rl.write(historyArray[historyIndex]);
+    if (historyIndex === -1) {
+      historyIndex = historyArray.length - 1;
+    } else if (historyIndex > 0) {
+      historyIndex -= 1;
     }
 
-    // handle down arrow navigation
-    if (key.name === "down") {
-      if (historyIndex === -1) return;
+    // It clears the current input, whatever was written on terminal before pressing up
+    rl.write(null, { ctrl: true, name: "u" });
+    //   Now we will write the history:
+    rl.write(historyArray[historyIndex]);
+  }
 
-      historyIndex++;
+  // handle down arrow navigation
+  if (keyName === "down") {
+    if (historyIndex === -1) return;
 
-      if (historyIndex >= historyArray.length) {
-        historyIndex = -1;
-        rl.write(null, { ctrl: true, name: "u" });
-        return;
-      }
+    historyIndex++;
 
+    if (historyIndex >= historyArray.length) {
+      historyIndex = -1;
       rl.write(null, { ctrl: true, name: "u" });
-      rl.write(historyArray[historyIndex]);
+      return;
     }
-  });
+
+    rl.write(null, { ctrl: true, name: "u" });
+    rl.write(historyArray[historyIndex]);
+  }
 };
