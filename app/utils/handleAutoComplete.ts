@@ -61,8 +61,8 @@ const trie = new Trie();
 builtIn.forEach((eachBuiltIn) => trie.insert(eachBuiltIn));
 
 let suggestionsIndex = 0;
-export let suggestions: string[] = [];
 
+export let suggestions: string[] = [];
 export const setSuggestions = (data: string[]) => (suggestions = [...data]);
 
 export const handleAutoComplete = (rl: Interface) => {
@@ -79,6 +79,7 @@ export const handleAutoComplete = (rl: Interface) => {
 
   if (suggestions.length === 0) {
     rl.write(typedKeyword);
+    process.stdout.write("\x07"); //ring a bell - \x07
     return;
   }
 
