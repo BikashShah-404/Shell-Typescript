@@ -1,5 +1,7 @@
 import type { Interface } from "node:readline";
-import { builtIn } from "../constants";
+import { builtIn, paths } from "../constants";
+import { access, opendir } from "node:fs/promises";
+import path from "node:path";
 
 class TrieNode {
   children: Map<string, TrieNode>;
@@ -59,6 +61,20 @@ class Trie {
 
 const trie = new Trie();
 builtIn.forEach((eachBuiltIn) => trie.insert(eachBuiltIn));
+
+paths.map(async (envPath) => {
+  try {
+    const dir = await opendir(envPath, { recursive: true });
+    for await (const dirent of dir) {
+      if (dirent.isFile()) {
+        await access(path.join(dirent.parentPath, dirent.name));
+        trie.insert(dirent.name);
+      }
+    }
+  } catch (err) {
+    return null;
+  }
+});
 
 let suggestionsIndex = 0;
 
