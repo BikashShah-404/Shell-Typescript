@@ -16,7 +16,11 @@ import {
   runHistory,
   setHistoryIndex,
 } from "./utils/runHistory.ts";
-import { handleAutoComplete } from "./utils/handleAutoComplete.ts";
+import {
+  handleAutoComplete,
+  setSuggestions,
+  suggestions,
+} from "./utils/handleAutoComplete.ts";
 
 process.env.HISTFILE = process.env.HISTFILE
   ? process.env.HISTFILE
@@ -81,5 +85,7 @@ process.stdin.on("keypress", (_, key) => {
     handleHistoryNavigation(rl, key.name);
   } else if (key.name === "tab") {
     handleAutoComplete(rl);
+  } else {
+    if (suggestions.length > 0) setSuggestions([]);
   }
 });

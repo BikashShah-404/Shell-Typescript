@@ -126,7 +126,7 @@ export const setHistoryIndex = (value: number) => {
   historyIndex = value;
 };
 
-export const handleHistoryNavigation = (rl: Interface, keyName) => {
+export const handleHistoryNavigation = (rl: Interface, keyName: any) => {
   const historyArray = [...commandHistoryFromFile, ...commandHistory];
 
   // handle up arrow naviagtion

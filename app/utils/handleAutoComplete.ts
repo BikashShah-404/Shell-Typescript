@@ -61,25 +61,28 @@ const trie = new Trie();
 builtIn.forEach((eachBuiltIn) => trie.insert(eachBuiltIn));
 
 let suggestionsIndex = 0;
-let suggestions: string[] = [];
+export let suggestions: string[] = [];
+
+export const setSuggestions = (data: string[]) => (suggestions = [...data]);
+
 export const handleAutoComplete = (rl: Interface) => {
   // Catching what is on the terminal when tab was pressed:
-  const keyword = rl.line.trim();
+  const typedKeyword = rl.line.trim();
+
+  if (!trie.search(typedKeyword)) {
+    suggestions = trie.collectSuggestions(typedKeyword);
+    suggestionsIndex = 0;
+  }
 
   // To prevent the defualt tab behaviour:
   rl.write(null, { ctrl: true, name: "u" });
 
-  if (!trie.search(keyword)) {
-    suggestions = [...trie.collectSuggestions(keyword)];
-    suggestionsIndex = 0;
+  if (suggestions.length === 0) {
+    rl.write(typedKeyword);
+    return;
   }
 
-  if (suggestions.length === 0) {
-    rl.write(keyword);
-    return;
-  } else {
-    rl.write(`${suggestions[suggestionsIndex++]} `);
-    if (suggestionsIndex === suggestions.length) suggestionsIndex = 0;
-    return;
-  }
+  rl.write(`${suggestions[suggestionsIndex]} `);
+  suggestionsIndex = (suggestionsIndex + 1) % suggestions.length;
+  return;
 };
