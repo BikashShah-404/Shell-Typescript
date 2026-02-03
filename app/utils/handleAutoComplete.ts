@@ -39,6 +39,7 @@ class Trie {
     }
     return current.isEndOfWord;
   }
+
   collectSuggestions(prefix: string): string[] {
     const suggestions: string[] = [];
 
@@ -59,16 +60,19 @@ class Trie {
   }
 }
 
+// Trie for builtins
 const trie = new Trie();
 builtIn.forEach((eachBuiltIn) => trie.insert(eachBuiltIn));
 
+// Trie for executable files in Directories in PATH
+const execTrie = new Trie();
 paths.map(async (envPath) => {
   try {
     const dir = await opendir(envPath, { recursive: true });
     for await (const dirent of dir) {
       if (dirent.isFile()) {
         await access(path.join(dirent.parentPath, dirent.name));
-        trie.insert(dirent.name);
+        execTrie.insert(dirent.name);
       }
     }
   } catch (err) {
@@ -77,9 +81,14 @@ paths.map(async (envPath) => {
 });
 
 let suggestionsIndex = 0;
+let execFileSuggestionsIndex = 0;
 
 export let suggestions: string[] = [];
 export const setSuggestions = (data: string[]) => (suggestions = [...data]);
+
+export let execFileSuggestions: string[] = [];
+export const setExecFileSuggestions = (data: string[]) =>
+  (execFileSuggestions = [...data]);
 
 export const handleAutoComplete = (rl: Interface) => {
   // Catching what is on the terminal when tab was pressed:
@@ -89,13 +98,23 @@ export const handleAutoComplete = (rl: Interface) => {
     suggestions = trie.collectSuggestions(typedKeyword);
     suggestionsIndex = 0;
   }
+  if (!execTrie.search(typedKeyword)) {
+    execFileSuggestions = execTrie.collectSuggestions(typedKeyword);
+    execFileSuggestionsIndex = 0;
+  }
 
   // To prevent the defualt tab behaviour:
   rl.write(null, { ctrl: true, name: "u" });
 
   if (suggestions.length === 0) {
-    rl.write(typedKeyword);
-    process.stdout.write("\x07"); //ring a bell - \x07
+    if (execFileSuggestions.length === 0) {
+      rl.write(typedKeyword);
+      process.stdout.write("\x07"); //ring a bell - \x07
+    } else {
+      rl.write(`${execFileSuggestions[execFileSuggestionsIndex]} `);
+      execFileSuggestionsIndex =
+        (execFileSuggestionsIndex + 1) % execFileSuggestions.length;
+    }
     return;
   }
 

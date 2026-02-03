@@ -17,7 +17,9 @@ import {
   setHistoryIndex,
 } from "./utils/runHistory.ts";
 import {
+  execFileSuggestions,
   handleAutoComplete,
+  setExecFileSuggestions,
   setSuggestions,
   suggestions,
 } from "./utils/handleAutoComplete.ts";
@@ -87,5 +89,6 @@ process.stdin.on("keypress", (_, key) => {
     handleAutoComplete(rl);
   } else {
     if (suggestions.length > 0) setSuggestions([]);
+    if (execFileSuggestions.length > 0) setExecFileSuggestions([]);
   }
 });
