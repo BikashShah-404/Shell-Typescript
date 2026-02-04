@@ -79,9 +79,6 @@ class Trie {
 // Trie for builtins
 const trie = new Trie();
 builtIn.forEach((eachBuiltIn) => trie.insert(eachBuiltIn));
-trie.insert("xyz_foo");
-trie.insert("xyz_foo_bar");
-trie.insert("xyz_foo_bar_baz");
 
 // Trie for executable files in Directories in PATH
 const execTrie = new Trie();
