@@ -134,12 +134,14 @@ export const handleAutoComplete = (rl: any) => {
     rl.write(`${combinedSuggestions[0]} `);
   } else {
     process.stdout.write("\x07");
+    // lcp is commonly used for executable files so search only in their trie.
     const lcp = execTrie.getLongestCommonPrefix(typedKeyword);
     rl.write(lcp);
     tabCount++;
     if (tabCount === 2) {
       process.stdout.write("\n");
       for (const eachSuggestion of suggestions) {
+        // while providing suggestions for both builtins and executables , inorder to distinguish builtins from executables, color them purple
         process.stdout.write(`\x1b[34m${eachSuggestion}\x1b[0m  `);
       }
       for (const eachExecFileSuggestion of execFileSuggestions) {
