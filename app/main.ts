@@ -24,7 +24,6 @@ import {
   setSuggestions,
   setTabCount,
   suggestions,
-  tabCount,
 } from "./utils/handleAutoComplete.ts";
 
 process.env.HISTFILE = process.env.HISTFILE

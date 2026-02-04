@@ -58,11 +58,30 @@ class Trie {
     dfs(current, prefix);
     return suggestions;
   }
+
+  getLongestCommonPrefix(prefix: string): string {
+    let current = this.root;
+    for (const char of prefix) {
+      if (!current.children.has(char)) return prefix;
+      current = current.children.get(char)!;
+    }
+
+    while (current.children.size === 1) {
+      if (current.isEndOfWord) break;
+      const [[char, child]] = current.children;
+      prefix += char;
+      current = child;
+    }
+    return prefix;
+  }
 }
 
 // Trie for builtins
 const trie = new Trie();
 builtIn.forEach((eachBuiltIn) => trie.insert(eachBuiltIn));
+trie.insert("xyz_foo");
+trie.insert("xyz_foo_bar");
+trie.insert("xyz_foo_bar_baz");
 
 // Trie for executable files in Directories in PATH
 const execTrie = new Trie();
@@ -100,55 +119,38 @@ export const handleAutoComplete = (rl: any) => {
 
   if (!trie.search(typedKeyword)) {
     suggestions = trie.collectSuggestions(typedKeyword);
-    if (!execTrie.search(typedKeyword)) {
-      execFileSuggestions = execTrie.collectSuggestions(typedKeyword);
-      execFileSuggestions.sort();
-    }
+  }
+  if (!execTrie.search(typedKeyword)) {
+    execFileSuggestions = execTrie.collectSuggestions(typedKeyword);
+    execFileSuggestions.sort();
   }
 
   // To prevent the defualt tab behaviour:
   rl.write(null, { ctrl: true, name: "u" });
 
-  if (suggestions.length === 0) {
-    // If no built-in suggestion is found
-    if (execFileSuggestions.length === 0) {
-      // if no execFileSuggestion is found
-      rl.write(typedKeyword);
-      process.stdout.write("\x07"); //ring a bell - \x07
-    } else if (execFileSuggestions.length === 1) {
-      // if execFile suggestion is only one just write , don't suggest
-      rl.write(`${execFileSuggestions[0]} `);
-    } else {
-      // if more than one execFileSuggestions , then suggest all on pressing tab twice , ring bell on first tab
-      process.stdout.write("\x07");
-      rl.write(typedKeyword);
-      tabCount++;
-      if (tabCount === 2) {
-        rl.output.write("\n");
-        for (const eachExecFileSuggestion of execFileSuggestions) {
-          rl.output.write(`${eachExecFileSuggestion}  `);
-        }
-        rl.output.write("\n");
-        rl._refreshLine();
-        tabCount = 0;
-      }
-    }
-    return;
-  } else if (suggestions.length === 1) {
-    rl.write(`${suggestions[0]} `);
+  const combinedSuggestions = [...suggestions, ...execFileSuggestions];
+
+  if (combinedSuggestions.length === 0) {
+    rl.write(typedKeyword);
+    process.stdout.write("\x07"); //ring a bell - \x07
+  } else if (combinedSuggestions.length === 1) {
+    rl.write(`${combinedSuggestions[0]} `);
   } else {
     process.stdout.write("\x07");
-    rl.write(typedKeyword);
+    const lcp = trie.getLongestCommonPrefix(typedKeyword);
+    rl.write(lcp);
     tabCount++;
     if (tabCount === 2) {
-      rl.output.write("\n");
-      for (const suggestion of suggestions) {
-        rl.output.write(`${suggestion}  `);
+      process.stdout.write("\n");
+      for (const eachSuggestion of suggestions) {
+        process.stdout.write(`\x1b[34m${eachSuggestion}\x1b[0m  `);
       }
-      rl.output.write("\n");
+      for (const eachExecFileSuggestion of execFileSuggestions) {
+        process.stdout.write(`${eachExecFileSuggestion}  `);
+      }
+      process.stdout.write("\n");
       rl._refreshLine();
       tabCount = 0;
-      return;
     }
   }
 };
