@@ -18,10 +18,13 @@ import {
 } from "./utils/runHistory.ts";
 import {
   execFileSuggestions,
+  getExecFilesForSuggestions,
   handleAutoComplete,
   setExecFileSuggestions,
   setSuggestions,
+  setTabCount,
   suggestions,
+  tabCount,
 } from "./utils/handleAutoComplete.ts";
 
 process.env.HISTFILE = process.env.HISTFILE
@@ -37,6 +40,7 @@ rl.setPrompt("$ ");
 rl.prompt();
 
 readHistoryOnStartUp();
+getExecFilesForSuggestions();
 
 rl.on("line", (command: string) => {
   // split(/s+/) - splits the string into parts wherever there are one or more whitespace characters.
@@ -90,5 +94,6 @@ process.stdin.on("keypress", (_, key) => {
   } else {
     if (suggestions.length > 0) setSuggestions([]);
     if (execFileSuggestions.length > 0) setExecFileSuggestions([]);
+    setTabCount(0);
   }
 });
