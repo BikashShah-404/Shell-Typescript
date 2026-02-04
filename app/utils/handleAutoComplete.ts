@@ -134,7 +134,7 @@ export const handleAutoComplete = (rl: any) => {
     rl.write(`${combinedSuggestions[0]} `);
   } else {
     process.stdout.write("\x07");
-    const lcp = trie.getLongestCommonPrefix(typedKeyword);
+    const lcp = execTrie.getLongestCommonPrefix(typedKeyword);
     rl.write(lcp);
     tabCount++;
     if (tabCount === 2) {
