@@ -47,7 +47,6 @@ function parseArgs(input: string): string[] | [] {
   let match: RegExpExecArray | null;
 
   while ((match = regex.exec(input)) !== null) {
-    console.log(match[1]);
 
     args.push(match[1].replace(/'|"/g, ""));
   }
@@ -66,7 +65,6 @@ rl.on("line", (command: string) => {
   setHistoryIndex(-1);
 
   const [cmd, ...args] = parseArgs(command.trim());
-  console.log(cmd, args);
 
   if (cmd === "exit") {
     runExit(args, rl);
