@@ -47,9 +47,23 @@ function parseArgs(input: string): string[] | [] {
   let match: RegExpExecArray | null;
 
   while ((match = regex.exec(input)) !== null) {
-    args.push(match[1].replace(/'|"/g, ""));
-  }
+    let token = match[1];
+    if (
+      (token.startsWith("'") && token.endsWith("'")) ||
+      (token.startsWith('"') && token.endsWith('"'))
+    ) {
+      token = token.slice(1, -1);
+    }
 
+    let quoteCount = 0;
+    for (const char of token) {
+      if (char === "'") quoteCount++;
+      if (quoteCount === 2) {
+        token = token.replace(/'|"/g, "");
+      }
+    }
+    args.push(token);
+  }
   return args;
 }
 

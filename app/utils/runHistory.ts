@@ -21,7 +21,7 @@ export const runHistory = (args: string[]) => {
           for (const eachLine of data
             .toString()
             .trim()
-            .split(os.EOL)
+            .split(/\r?\n/)
             .filter(Boolean)) {
             commandHistoryFromFile.push(eachLine);
           }
@@ -29,7 +29,7 @@ export const runHistory = (args: string[]) => {
           for (const eachLine of data
             .toString()
             .trim()
-            .split(os.EOL)
+            .split(/\r?\n/)
             .filter(Boolean)) {
             commandHistory.push(eachLine);
           }
