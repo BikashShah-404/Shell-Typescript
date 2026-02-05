@@ -55,11 +55,16 @@ function parseArgs(input: string): string[] | [] {
       token = token.slice(1, -1);
     }
 
-    let quoteCount = 0;
+    let singlequoteCount = 0;
+    let doublequoteCount = 0;
     for (const char of token) {
-      if (char === "'") quoteCount++;
-      if (quoteCount === 2) {
-        token = token.replace(/'|"/g, "");
+      if (char === "'") singlequoteCount++;
+      if (char === '"') doublequoteCount++;
+      if (singlequoteCount === 2) {
+        token = token.replace("'", "");
+      }
+      if (doublequoteCount === 2) {
+        token = token.replace('"', "");
       }
     }
     args.push(token);
