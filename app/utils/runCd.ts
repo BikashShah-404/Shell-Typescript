@@ -10,6 +10,6 @@ export const runCd = (dirToGo: string) => {
     }
     process.chdir(dirToGo);
   } catch (error) {
-    // console.log(`cd: ${dirToGo}: No such file or directory`);
+    console.log(`cd: ${dirToGo}: No such file or directory`);
   }
 };

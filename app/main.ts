@@ -75,7 +75,7 @@ rl.on("line", (command: string) => {
   } else if (cmd === "pwd") {
     runPwd();
   } else if (cmd === "cd") {
-    runCd(args[1]);
+    runCd(args[0]);
   } else if (cmd === "history") {
     if (cmd) {
       runHistory(args);
