@@ -71,7 +71,7 @@ rl.on("line", (command: string) => {
   } else if (cmd === "echo") {
     runEcho(args);
   } else if (cmd === "type") {
-    args[1] && runType(args[1]);
+    args[0] && runType(args[0]);
   } else if (cmd === "pwd") {
     runPwd();
   } else if (cmd === "cd") {
