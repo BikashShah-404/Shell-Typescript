@@ -1,3 +1,3 @@
-export const runEcho = (commandParts: string[]): void => {
-  console.log(commandParts.slice(1).join(" "));
+export const runEcho = (args: string[]): void => {
+  console.log(args.join(" "));
 };

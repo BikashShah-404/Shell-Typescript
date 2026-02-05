@@ -41,6 +41,20 @@ rl.prompt();
 readHistoryOnStartUp();
 getExecFilesForSuggestions();
 
+function parseArgs(input: string): string[] | [] {
+  const regex = /((?:'[^']*'|"[^"]*"|[^\s'"])+)/g;
+  const args: string[] = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(input)) !== null) {
+    console.log(match[1]);
+
+    args.push(match[1].replace(/'|"/g, ""));
+  }
+
+  return args;
+}
+
 rl.on("line", (command: string) => {
   // split(/s+/) - splits the string into parts wherever there are one or more whitespace characters.
   if (
@@ -51,28 +65,27 @@ rl.on("line", (command: string) => {
   }
   setHistoryIndex(-1);
 
-  const commandParts = command.trim().split(/\s+/);
+  const [cmd, ...args] = parseArgs(command.trim());
+  console.log(cmd, args);
 
-  if (commandParts[0] === "exit") {
-    runExit(commandParts, rl);
+  if (cmd === "exit") {
+    runExit(args, rl);
     return;
-  } else if (commandParts[0] === "echo") {
-    runEcho(commandParts);
-  } else if (commandParts[0] === "type") {
-    commandParts[1] && runType(commandParts[1]);
-  } else if (commandParts[0] === "pwd") {
+  } else if (cmd === "echo") {
+    runEcho(args);
+  } else if (cmd === "type") {
+    args[1] && runType(args[1]);
+  } else if (cmd === "pwd") {
     runPwd();
-  } else if (commandParts[0] === "cd") {
-    runCd(commandParts[1]);
-  } else if (commandParts[0] === "history") {
-    const [command, ...args] = commandParts;
-    if (command) {
+  } else if (cmd === "cd") {
+    runCd(args[1]);
+  } else if (cmd === "history") {
+    if (cmd) {
       runHistory(args);
     }
   } else {
-    const [command, ...args] = commandParts;
-    if (command) {
-      const childproc = runCustomCommand(command, args);
+    if (cmd) {
+      const childproc = runCustomCommand(cmd, args);
       childproc.on("close", () => rl.prompt());
       return;
     }

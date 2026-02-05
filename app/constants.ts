@@ -9,4 +9,8 @@ export const builtIn: Set<string> = new Set([
   "pwd",
   "cd",
   "history",
+  "cat",
+  "wc",
+  "tail",
+  "head",
 ]);
