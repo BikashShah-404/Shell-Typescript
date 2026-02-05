@@ -47,7 +47,6 @@ function parseArgs(input: string): string[] | [] {
   let match: RegExpExecArray | null;
 
   while ((match = regex.exec(input)) !== null) {
-
     args.push(match[1].replace(/'|"/g, ""));
   }
 
