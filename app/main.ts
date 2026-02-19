@@ -42,33 +42,62 @@ readHistoryOnStartUp();
 getExecFilesForSuggestions();
 
 function parseArgs(input: string): string[] | [] {
-  const regex = /((?:'[^']*'|"[^"]*"|[^\s'"])+)/g;
+  const regex = /'([^']*)'|"([^"]*)"|[^\s'"]+/g;
   const args: string[] = [];
   let match: RegExpExecArray | null;
+  let prevMatchIndex = 0;
 
   while ((match = regex.exec(input)) !== null) {
-    let token = match[1];
+    let token = match[0];
+    console.log("token", match, token);
+
+    prevMatchIndex = prevMatchIndex + token.length;
+
     if (
       (token.startsWith("'") && token.endsWith("'")) ||
       (token.startsWith('"') && token.endsWith('"'))
     ) {
       token = token.slice(1, -1);
+      console.log("afterSllice", token);
     }
 
-    let singlequoteCount = 0;
-    let doublequoteCount = 0;
-    for (const char of token) {
-      if (char === "'") singlequoteCount++;
-      if (char === '"') doublequoteCount++;
-      if (singlequoteCount === 2) {
-        token = token.replace("'", "");
-      }
-      if (doublequoteCount === 2) {
-        token = token.replace('"', "");
-      }
+    console.log(prevMatchIndex);
+
+    console.log("uikagvdkjsb", match.index - prevMatchIndex);
+    if (match.index - prevMatchIndex === 1) {
+      console.log("next to each other");
     }
+
+    // let singlequoteCount = 0;
+    // let doublequoteCount = 0;
+    // for (const char of token) {
+    //   if (char === "\\") {
+    //     token = token.replace("\\", "");
+    //     continue;
+    //   }
+    //   if (char === "'") singlequoteCount++;
+    //   if (char === '"') doublequoteCount++;
+    //   if (singlequoteCount === 2) {
+    //     for (let i = 1; i <= 2; i++) {
+    //       token = token.replace("'", "");
+    //     }
+    //     singlequoteCount = 0;
+    //   }
+    //   if (doublequoteCount === 2) {
+    //     console.log(doublequoteCount);
+
+    //     for (let i = 1; i <= 2; i++) {
+    //       token = token.replace('"', "");
+    //       console.log(token);
+    //     }
+    //     doublequoteCount = 0;
+    //   }
+    // }
+
     args.push(token);
   }
+
+  // console.log(input.replaceAll());
   return args;
 }
 
@@ -83,6 +112,7 @@ rl.on("line", (command: string) => {
   setHistoryIndex(-1);
 
   const [cmd, ...args] = parseArgs(command.trim());
+  console.log(args);
 
   if (cmd === "exit") {
     runExit(args, rl);
