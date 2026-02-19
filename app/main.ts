@@ -42,62 +42,44 @@ readHistoryOnStartUp();
 getExecFilesForSuggestions();
 
 function parseArgs(input: string): string[] | [] {
-  const regex = /'([^']*)'|"([^"]*)"|[^\s'"]+/g;
+  const regex = /'([^']*)'|"([^"]*)"|\\.|[^\s'"\\]+/g;
+
   const args: string[] = [];
   let match: RegExpExecArray | null;
   let prevMatchIndex = 0;
+  let isNextToEachOther = false;
 
   while ((match = regex.exec(input)) !== null) {
     let token = match[0];
-    console.log("token", match, token);
-
-    prevMatchIndex = prevMatchIndex + token.length;
+    // console.log("token", match, token);
 
     if (
       (token.startsWith("'") && token.endsWith("'")) ||
       (token.startsWith('"') && token.endsWith('"'))
     ) {
       token = token.slice(1, -1);
-      console.log("afterSllice", token);
+      // console.log("afterSllice", token);
     }
 
-    console.log(prevMatchIndex);
-
-    console.log("uikagvdkjsb", match.index - prevMatchIndex);
-    if (match.index - prevMatchIndex === 1) {
-      console.log("next to each other");
+    if (token.includes("\\")) {
+      token = token.replaceAll("\\", "");
     }
 
-    // let singlequoteCount = 0;
-    // let doublequoteCount = 0;
-    // for (const char of token) {
-    //   if (char === "\\") {
-    //     token = token.replace("\\", "");
-    //     continue;
-    //   }
-    //   if (char === "'") singlequoteCount++;
-    //   if (char === '"') doublequoteCount++;
-    //   if (singlequoteCount === 2) {
-    //     for (let i = 1; i <= 2; i++) {
-    //       token = token.replace("'", "");
-    //     }
-    //     singlequoteCount = 0;
-    //   }
-    //   if (doublequoteCount === 2) {
-    //     console.log(doublequoteCount);
+    // console.log("uikagvdkjsb", match.index - prevMatchIndex);
+    if (match.index - prevMatchIndex === 0 && match.index !== 0)
+      isNextToEachOther = true;
 
-    //     for (let i = 1; i <= 2; i++) {
-    //       token = token.replace('"', "");
-    //       console.log(token);
-    //     }
-    //     doublequoteCount = 0;
-    //   }
-    // }
+    prevMatchIndex = match.index + match[0].length;
 
-    args.push(token);
+    if (isNextToEachOther) {
+      const endArg = args.pop();
+      args.push(endArg + token);
+      isNextToEachOther = false;
+    } else {
+      args.push(token);
+    }
   }
 
-  // console.log(input.replaceAll());
   return args;
 }
 
