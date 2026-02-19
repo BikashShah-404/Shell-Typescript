@@ -94,7 +94,6 @@ rl.on("line", (command: string) => {
   setHistoryIndex(-1);
 
   const [cmd, ...args] = parseArgs(command.trim());
-  console.log(args);
 
   if (cmd === "exit") {
     runExit(args, rl);
